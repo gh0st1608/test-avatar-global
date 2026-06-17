@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "composite": true, // Le dice a TypeScript que este proyecto puede ser referenciado por otros proyectos usando "references"
+    "moduleResolution": "bundler", //librerias modernas -> "exports": {".": "./dist/index.js"} , compatible con vite5+
+    "module": "ESNext", //trabaja de forma nativa con módulos ES
+    "types": ["node"]
+  },
+  "include": ["vite.config.ts"]
+}

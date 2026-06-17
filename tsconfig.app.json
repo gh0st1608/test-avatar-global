@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    //"lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "isolatedModules": true, //Asegura que cada archivo se compile de forma independiente, lo que es útil para proyectos con bundlers modernos.
+    "resolveJsonModule": true, //Permite importar archivos JSON como módulos, lo que es útil para cargar configuraciones o datos estáticos en tu aplicación.
+    "allowImportingTsExtensions": true, //Permite importar archivos TypeScript con su extensión, lo que es útil en proyectos modernos y con bundlers que soportan esta característica.
+    "moduleResolution": "bundler", //librerias modernas -> "exports": {".": "./dist/index.js"} , compatible con vite5+
+    "skipLibCheck": true, //Evita que TypeScript revise los archivos de declaración de las dependencias, lo que puede acelerar la compilación y evitar errores relacionados con tipos en bibliotecas externas.
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@domain/*": ["src/domain/*"],
+      "@application/*": ["src/application/*"],
+      "@presentation/*": ["src/presentation/*"],
+      "@infrastructure/*": ["src/infrastructure/*"],
+      "@styles/*": ["src/styles/*"]
+    }
+  },
+  "include": ["src"]
+}
