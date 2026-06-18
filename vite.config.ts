@@ -17,8 +17,8 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      "/samples": {
-        target: "http://localhost:3000",
+      "/pokemon": {
+        target: "https://pokeapi.co/api/v2",
         changeOrigin: true,
         bypass(req) {
           // Browser page navigation (Accept: text/html) → serve index.html (React Router).
