@@ -2,13 +2,15 @@ import { useQuery } from "@tanstack/react-query";
 
 import { container } from "@/bootstrap/container";
 
-export function useFavoritePokemons() {
+export function usePokemonTypes() {
   return useQuery({
-    queryKey: ["favorites"],
+    queryKey: [
+      "pokemonTypes"
+    ],
 
     queryFn: () =>
       container
-        .getFavoritePokemons
+        .getPokemonTypes
         .execute(),
   });
 }

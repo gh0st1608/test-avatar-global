@@ -10,7 +10,7 @@ export class GetPokemonByIdUseCase {
     id: string,
   ): Promise<Pokemon | null> {
     return this.repository.getPokemonById(
-      id,
+      id
     );
   }
 }

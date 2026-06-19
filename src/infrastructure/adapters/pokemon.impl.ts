@@ -1,75 +1,106 @@
 import { Pokemon } from "@domain/entities/pokemon.entity";
 import { PokemonRepositoryPort } from "@domain/ports/pokemon.port";
 import { HttpClientPort } from "@domain/ports/http-client.port";
-import { CreatePokemonInput } from "@/application/dto/create-pokemon.input";
-import { UpdatePokemonInput } from "@/application/dto/update-pokemon.input";
+import { PokemonMapper } from "../mappers/pokemon.mapper";
+import {
+  PokemonByTypeResponse,
+  PokemonDetailResponse,
+  PokemonListResponse,
+  PokemonTypeListResponse,
+} from "../dto/pokemon.dto";
+import { PokemonListItem } from "@/domain/entities/pokemon-list-item.entity";
+import { env } from "../config/env";
 import { PokemonType } from "@/domain/entities/pokemon-type.entity";
-
-interface PokemonApiResponse {
-  id: number;
-  name: string;
-  image: string;
-  types: PokemonType[];
-  height: number;
-  weight: number;
-}
-
-interface ListPokemonsResponse {
-  items: PokemonApiResponse[];
-  count: number;
-  nextPage: number | null;
-  statusCode: number;
-  message: string;
-}
-
-interface SinglePokemonResponse {
-  pokemon: PokemonApiResponse;
-  statusCode: number;
-  message: string;
-}
-
-interface CreatePokemonResponse {
-  pokemon: { pokemonId: string };
-  statusCode: number;
-  message: string;
-}
 
 export class PokemonApiRepositoryImpl implements PokemonRepositoryPort {
   constructor(private readonly httpClient: HttpClientPort) {}
 
-  async getPokemons(offset: number, limit: number): Promise<Pokemon[]> {
-    const response =
-      await this.httpClient.get<ListPokemonsResponse>("/pokemons");
-    return response.items.map((s) => Pokemon.hydrate(s));
+  async getPokemons(offset: number, limit: number): Promise<PokemonListItem[]> {
+    try {
+      const response = await this.httpClient.get<PokemonListResponse>(
+        "/pokemon?offset=" + offset + "&limit=" + limit
+      );
+
+      const details = await Promise.all(
+        response.results.map(({ url }) => {
+          const path = url.replace(env.VITE_API_BASE_URL, "");
+
+          return this.httpClient.get<PokemonDetailResponse>(path);
+        })
+      );
+
+      return details.map((pokemon) =>
+        PokemonListItem.hydrate({
+          id: pokemon.id,
+          name: pokemon.name,
+          image:
+            pokemon.sprites.front_default ??
+            `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`,
+          types: pokemon.types.map((type) =>
+            PokemonType.hydrate({
+              name: type.type.name,
+            })
+          ),
+        })
+      );
+    } catch {
+      return [];
+    }
   }
 
   async getPokemonById(id: string): Promise<Pokemon | null> {
     try {
-      const response = await this.httpClient.get<SinglePokemonResponse>(
-        `/pokemons/${id}`
+      const response = await this.httpClient.get<PokemonDetailResponse>(
+        `/pokemon/${id}`
       );
-      return Pokemon.hydrate(response.pokemon);
+      return PokemonMapper.toDomain(response);
     } catch {
       return null;
     }
   }
 
-  async getPokemonByName(name: string): Promise<Pokemon | null> {
+  async getPokemonsByType(type: string): Promise<PokemonListItem[]> {
     try {
-      const response = await this.httpClient.get<SinglePokemonResponse>(
-        `/pokemons/name/${name}`
+      const response = await this.httpClient.get<PokemonByTypeResponse>(
+        `/type/${type}`
       );
-      return Pokemon.hydrate(response.pokemon);
+
+      const details = await Promise.all(
+        response.pokemon.map(({ pokemon }) => {
+          const path = pokemon.url.replace(env.VITE_API_BASE_URL, "");
+          return this.httpClient.get<PokemonDetailResponse>(path);
+        })
+      );
+
+      return details.map((pokemon) =>
+        PokemonListItem.hydrate({
+          id: pokemon.id,
+          name: pokemon.name,
+          image:
+            pokemon.sprites.front_default ??
+            `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`,
+          types: pokemon.types.map((type) =>
+            PokemonType.hydrate({
+              name: type.type.name,
+            })
+          ),
+        })
+      );
     } catch {
-      return null;
+      return [];
     }
   }
 
-  async getPokemonsByType(type: string): Promise<Pokemon[]> {
-    const response = await this.httpClient.get<ListPokemonsResponse>(
-      `/pokemons/type/${type}`
-    );
-    return response.items.map((s) => Pokemon.hydrate(s));
+  async getPokemonTypes(): Promise<PokemonType[]> {
+    try {
+      const response =
+        await this.httpClient.get<PokemonTypeListResponse>("/type");
+      return response.results.map((type) =>
+        PokemonType.hydrate({ name: type.name })
+      );
+    } catch {
+      return [];
+    }
   }
 
   /* async create(input: CreatePokemonInput): Promise<Pokemon> {

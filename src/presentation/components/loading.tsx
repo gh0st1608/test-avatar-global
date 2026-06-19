@@ -3,32 +3,73 @@ interface LoadingProps {
 }
 
 export function Loading({
-  message = "Loading...",
+  message = "Cargando Pokémon...",
 }: LoadingProps) {
   return (
-    <div
-      className="
-        flex
-        flex-col
-        items-center
-        justify-center
-        gap-4
-        py-10
-      "
-    >
+    <div className="flex justify-center py-16">
       <div
         className="
-          h-8
-          w-8
-          animate-spin
-          rounded-full
-          border-4
-          border-gray-300
-          border-t-black
+          flex
+          w-full
+          max-w-sm
+          flex-col
+          items-center
+          rounded-3xl
+          border
+          border-violet-100
+          bg-white
+          p-8
+          shadow-sm
         "
-      />
+      >
+        <div className="relative">
+          <div
+            className="
+              h-16
+              w-16
+              animate-spin
+              rounded-full
+              border-4
+              border-violet-100
+              border-t-violet-600
+            "
+          />
 
-      <p>{message}</p>
+          <div
+            className="
+              absolute
+              inset-0
+              flex
+              items-center
+              justify-center
+              text-xl
+            "
+          >
+            ⚡
+          </div>
+        </div>
+
+        <h3
+          className="
+            mt-6
+            text-lg
+            font-semibold
+            text-slate-800
+          "
+        >
+          {message}
+        </h3>
+
+        <p
+          className="
+            mt-2
+            text-sm
+            text-slate-500
+          "
+        >
+          Estamos obteniendo la información.
+        </p>
+      </div>
     </div>
   );
 }

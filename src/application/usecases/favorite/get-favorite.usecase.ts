@@ -6,7 +6,7 @@ export class GetFavoritePokemonsUseCase {
     private readonly repository: FavoritePokemonRepositoryPort,
   ) {}
 
-  execute(): FavoritePokemon[] {
+  async execute(): Promise<FavoritePokemon[]> {
     return this.repository.getAll();
   }
 }

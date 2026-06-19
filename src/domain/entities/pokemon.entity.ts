@@ -3,7 +3,9 @@ import { PokemonType } from "./pokemon-type.entity";
 export interface PokemonProps {
   id: number;
   name: string;
-  image: string;
+  sprites: {
+    front_default: string;
+  };
   types: PokemonType[];
   height: number;
   weight: number;
@@ -29,7 +31,7 @@ export class Pokemon {
   }
 
   get image(): string {
-    return this.props.image;
+    return this.props.sprites.front_default;
   }
 
   get types(): PokemonType[] {
@@ -69,7 +71,7 @@ export class Pokemon {
     return {
       id: this.id,
       name: this.name,
-      image: this.image,
+      sprites: this.props.sprites,
       types: this.types,
       height: this.height,
       weight: this.weight,

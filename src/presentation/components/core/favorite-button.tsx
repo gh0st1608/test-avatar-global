@@ -11,6 +11,16 @@ export function FavoriteButton({
     <button
       type="button"
       onClick={onToggle}
+      className="
+        rounded-xl
+        px-5
+        py-3
+        font-semibold
+        text-white
+        transition
+        hover:opacity-90
+        bg-red-500
+      "
     >
       {isFavorite
         ? "❤️ Remove Favorite"

@@ -1,62 +1,48 @@
 import { useParams } from "react-router-dom";
 
-import { Loading } from "@/presentation/components/loading/loading";
-import { ErrorState } from "@/presentation/components/error-state/error-state";
-import { EmptyState } from "@/presentation/components/empty-state/empty-state";
+import { Loading } from "@/presentation/components/loading";
+import { ErrorState } from "@/presentation/components/error-state";
+import { EmptyState } from "@/presentation/components/empty-state";
 
-import { FavoriteButton } from "@/presentation/components/favorite-button/favorite-button";
-import { PokemonTypeBadge } from "@/presentation/components/pokemon-type-badge/pokemon-type-badge";
+import { FavoriteButton } from "@/presentation/components/core/favorite-button";
+import { PokemonTypeBadge } from "@/presentation/components/core/pokemon-type-badge";
+
+import { useFavoritePokemons } from "@/presentation/hooks/use-favorites";
+
+import { useToggleFavoritePokemon } from "@/presentation/hooks/use-toogle-favorite";
 
 import { usePokemon } from "@/presentation/hooks/use-pokemon";
-import { useToggleFavoritePokemon } from "@/presentation/hooks/use-toggle-favorite-pokemon";
-import { useFavoritePokemons } from "@/presentation/hooks/use-favorite-pokemons";
 
 export function PokemonDetailScreen() {
-  const params = useParams();
+  const { id } = useParams<{
+    id: string;
+  }>();
 
-  const pokemonId = Number(
-    params.id,
-  );
+  if (!id) {
+    return <ErrorState title="Invalid Pokémon id" />;
+  }
 
-  const {
-    data: pokemon,
-    isLoading,
-    error,
-  } = usePokemon(pokemonId);
+  const { data: pokemon, isLoading, error } = usePokemon(id);
 
-  const {
-    data: favorites = [],
-  } = useFavoritePokemons();
+  const { data: favorites = [] } = useFavoritePokemons();
 
-  const toggleFavoriteMutation =
-    useToggleFavoritePokemon();
+  const toggleFavoriteMutation = useToggleFavoritePokemon();
 
   if (isLoading) {
     return <Loading />;
   }
 
   if (error) {
-    return (
-      <ErrorState
-        title="Unable to load Pokémon"
-      />
-    );
+    return <ErrorState title="Unable to load Pokémon" />;
   }
 
   if (!pokemon) {
-    return (
-      <EmptyState
-        title="Pokémon not found"
-      />
-    );
+    return <EmptyState title="Pokémon not found" />;
   }
 
-  const isFavorite =
-    favorites.some(
-      (favorite) =>
-        favorite.pokemonId ===
-        pokemon.id,
-    );
+  const isFavorite = favorites.some(
+    (favorite) => favorite.pokemonId === pokemon.id
+  );
 
   return (
     <main
@@ -68,18 +54,25 @@ export function PokemonDetailScreen() {
     >
       <section
         className="
-          flex
-          flex-col
-          gap-6
-        "
+    rounded-3xl
+    bg-white
+    p-8
+    shadow-lg
+    border
+    border-slate-200
+    flex
+    flex-col
+    gap-6
+  "
       >
         <img
           src={pokemon.image}
           alt={pokemon.name}
           className="
-            h-72
-            object-contain
-          "
+    mx-auto
+    h-72
+    object-contain
+  "
         />
 
         <div>
@@ -100,14 +93,9 @@ export function PokemonDetailScreen() {
             flex-wrap
           "
         >
-          {pokemon.types.map(
-            (type) => (
-              <PokemonTypeBadge
-                key={type.name}
-                name={type.name}
-              />
-            ),
-          )}
+          {pokemon.types.map((type) => (
+            <PokemonTypeBadge key={type.name} name={type.name} />
+          ))}
         </div>
 
         <div
@@ -118,39 +106,21 @@ export function PokemonDetailScreen() {
           "
         >
           <div>
-            <strong>
-              Height
-            </strong>
+            <strong>Height</strong>
 
-            <p>
-              {
-                pokemon.formattedHeight
-              }
-            </p>
+            <p>{pokemon.formattedHeight}</p>
           </div>
 
           <div>
-            <strong>
-              Weight
-            </strong>
+            <strong>Weight</strong>
 
-            <p>
-              {
-                pokemon.formattedWeight
-              }
-            </p>
+            <p>{pokemon.formattedWeight}</p>
           </div>
         </div>
 
         <FavoriteButton
-          isFavorite={
-            isFavorite
-          }
-          onToggle={() =>
-            toggleFavoriteMutation.mutate(
-              pokemon.id,
-            )
-          }
+          isFavorite={isFavorite}
+          onToggle={() => toggleFavoriteMutation.mutate(pokemon.id)}
         />
       </section>
     </main>

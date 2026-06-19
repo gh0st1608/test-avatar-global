@@ -1,11 +1,7 @@
 import type { HttpClientPort } from "@domain/ports/http-client.port";
-import { env } from "@infrastructure/config/env";
-import type {
-  FetchHttpClientConfig
-} from "@infrastructure/api/http-client.types";
-import {
-  createHttpRequestContext
-} from "@infrastructure/api/http-interceptors";
+import { env } from "@/infrastructure/config/env";
+import type { FetchHttpClientConfig } from "@infrastructure/api/http-client.types";
+import { createHttpRequestContext } from "@infrastructure/api/http-interceptors";
 
 export class FetchHttpClient implements HttpClientPort {
   private readonly baseUrl: string;
@@ -24,9 +20,8 @@ export class FetchHttpClient implements HttpClientPort {
       const response = await fetch(context.url, context.options);
 
       return response.json() as Promise<T>;
-      
     } catch (error) {
-        throw error 
+      throw error;
     }
   }
 

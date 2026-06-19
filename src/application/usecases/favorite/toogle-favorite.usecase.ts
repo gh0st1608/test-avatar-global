@@ -6,9 +6,9 @@ export class ToggleFavoritePokemonUseCase {
     private readonly repository: FavoritePokemonRepositoryPort,
   ) {}
 
-  execute(
+  async execute(
     pokemonId: number,
-  ): boolean {
+  ): Promise<boolean> {
     const exists =
       this.repository.exists(
         pokemonId,

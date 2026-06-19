@@ -1,6 +1,5 @@
-import { Pokemon } from "@domain/entities/pokemon.entity";
+import { PokemonListItem } from "@/domain/entities/pokemon-list-item.entity";
 import { PokemonRepositoryPort } from "@domain/ports/pokemon.port";
-
 
 export class GetPokemonsByTypeUseCase {
   constructor(
@@ -8,8 +7,8 @@ export class GetPokemonsByTypeUseCase {
   ) {}
 
   async execute(
-    type : string,
-  ): Promise<Pokemon[]> {
+    type: string
+  ): Promise<PokemonListItem[]> {
     return this.repository.getPokemonsByType(
       type
     );

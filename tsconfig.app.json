@@ -9,7 +9,7 @@
     "moduleResolution": "bundler", //librerias modernas -> "exports": {".": "./dist/index.js"} , compatible con vite5+
     "skipLibCheck": true, //Evita que TypeScript revise los archivos de declaración de las dependencias, lo que puede acelerar la compilación y evitar errores relacionados con tipos en bibliotecas externas.
     "jsx": "react-jsx",
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"],
       "@domain/*": ["src/domain/*"],

@@ -1,4 +1,4 @@
-import { Pokemon } from "@domain/entities/pokemon.entity";
+import { PokemonListItem } from "@/domain/entities/pokemon-list-item.entity";
 import { PokemonRepositoryPort } from "@domain/ports/pokemon.port";
 
 export class GetPokemonsUseCase {
@@ -9,10 +9,10 @@ export class GetPokemonsUseCase {
   async execute(
     offset: number,
     limit: number,
-  ): Promise<Pokemon[]> {
+  ): Promise<PokemonListItem[]> {
     return this.repository.getPokemons(
       offset,
-      limit,
+      limit
     );
   }
 }

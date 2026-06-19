@@ -5,9 +5,9 @@ export class IsFavoritePokemonUseCase {
     private readonly repository: FavoritePokemonRepositoryPort,
   ) {}
 
-  execute(
+  async execute(
     pokemonId: number,
-  ): boolean {
+  ): Promise<boolean> {
     return this.repository.exists(
       pokemonId,
     );
