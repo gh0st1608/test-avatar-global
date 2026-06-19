@@ -9,81 +9,50 @@ interface FavoritePokemonStorage {
   createdAt: string;
 }
 
-const STORAGE_KEY =
-  "pokemon-favorites";
+const STORAGE_KEY = "pokemon-favorites";
 
-export class FavoritePokemonRepositoryImpl
-  implements FavoritePokemonRepositoryPort
-{
-  constructor(
-    private readonly storage: StoragePort,
-  ) {}
+export class FavoritePokemonRepositoryImpl implements FavoritePokemonRepositoryPort {
+  constructor(private readonly storage: StoragePort) {}
 
-  getAll(): FavoritePokemon[] {
+  async getAll(): Promise<FavoritePokemon[]> {
     const favorites =
-      this.storage.get<
-        FavoritePokemonStorage[]
-      >(STORAGE_KEY) ?? [];
+      this.storage.get<FavoritePokemonStorage[]>(STORAGE_KEY) ?? [];
 
-    return favorites.map(
-      (favorite) =>
-        FavoritePokemon.hydrate(
-          favorite,
-        ),
-    );
+    return favorites.map((favorite) => FavoritePokemon.hydrate(favorite));
   }
 
-  add(
-    favorite: FavoritePokemon,
-  ): void {
+  async add(favorite: FavoritePokemon): Promise<void> {
     const favorites =
-      this.storage.get<
-        FavoritePokemonStorage[]
-      >(STORAGE_KEY) ?? [];
+      this.storage.get<FavoritePokemonStorage[]>(STORAGE_KEY) ?? [];
 
-    favorites.push(
-      favorite.toPrimitives(),
+    const exists = favorites.some(
+      (item) => item.pokemonId === favorite.pokemonId
     );
 
-    this.storage.set(
-      STORAGE_KEY,
-      favorites,
-    );
+    if (exists) {
+      return;
+    }
+
+    favorites.push(favorite.toPrimitives());
+
+    this.storage.set(STORAGE_KEY, favorites);
   }
 
-  remove(
-    pokemonId: number,
-  ): void {
+  async remove(pokemonId: number): Promise<void> {
     const favorites =
-      this.storage.get<
-        FavoritePokemonStorage[]
-      >(STORAGE_KEY) ?? [];
+      this.storage.get<FavoritePokemonStorage[]>(STORAGE_KEY) ?? [];
 
-    const filtered =
-      favorites.filter(
-        (favorite) =>
-          favorite.pokemonId !==
-          pokemonId,
-      );
-
-    this.storage.set(
-      STORAGE_KEY,
-      filtered,
+    const filtered = favorites.filter(
+      (favorite) => favorite.pokemonId !== pokemonId
     );
+
+    this.storage.set(STORAGE_KEY, filtered);
   }
 
-  exists(
-    pokemonId: number,
-  ): boolean {
+  async exists(pokemonId: number): Promise<boolean> {
     const favorites =
-      this.storage.get<
-        FavoritePokemonStorage[]
-      >(STORAGE_KEY) ?? [];
+      this.storage.get<FavoritePokemonStorage[]>(STORAGE_KEY) ?? [];
 
-    return favorites.some(
-      (favorite) =>
-        favorite.pokemonId ===
-        pokemonId,
-    );
+    return favorites.some((favorite) => favorite.pokemonId === pokemonId);
   }
 }

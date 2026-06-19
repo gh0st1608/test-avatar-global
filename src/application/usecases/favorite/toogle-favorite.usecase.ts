@@ -3,26 +3,28 @@ import { FavoritePokemonRepositoryPort } from "@domain/ports/favorite-pokemon.po
 
 export class ToggleFavoritePokemonUseCase {
   constructor(
-    private readonly repository: FavoritePokemonRepositoryPort,
+    private readonly repository:
+      FavoritePokemonRepositoryPort,
   ) {}
 
   async execute(
     pokemonId: number,
   ): Promise<boolean> {
+
     const exists =
-      this.repository.exists(
+      await this.repository.exists(
         pokemonId,
       );
 
     if (exists) {
-      this.repository.remove(
+      await this.repository.remove(
         pokemonId,
       );
 
       return false;
     }
 
-    this.repository.add(
+    await this.repository.add(
       FavoritePokemon.create(
         pokemonId,
       ),

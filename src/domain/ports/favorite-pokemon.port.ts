@@ -1,17 +1,17 @@
 import { FavoritePokemon } from "@domain/entities/favorite-pokemon.entity";
 
 export interface FavoritePokemonRepositoryPort {
-  getAll(): FavoritePokemon[];
+  getAll(): Promise<FavoritePokemon[]>;
 
   add(
     favorite: FavoritePokemon,
-  ): void;
+  ): Promise<void>;
 
   remove(
     pokemonId: number,
-  ): void;
+  ): Promise<void>;
 
   exists(
     pokemonId: number,
-  ): boolean;
+  ): Promise<boolean>;
 }
