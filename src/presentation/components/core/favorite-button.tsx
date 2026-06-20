@@ -19,7 +19,7 @@ export function FavoriteButton({
         text-white
         transition
         hover:opacity-90
-        bg-red-500
+        bg-blue-500
       "
     >
       {isFavorite
