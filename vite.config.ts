@@ -4,6 +4,7 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
+  base: "/pokeapp/",
   plugins: [react(), tailwindcss({ optimize : true})],
   resolve: {
     alias: {
